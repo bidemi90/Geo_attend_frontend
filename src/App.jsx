@@ -15,6 +15,7 @@ import CollectedAttendancepage from "./pages/CollectedAttendancepage";
 import Attendancehistorypage from "./pages/Attendancehistorypage";
 import ProfilePage from "./pages/ProfilePage";
 import Markeattendancepage from "./pages/Markeattendancepage";
+import Dashboardhome from "./pages/Dashboardhome";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -30,7 +31,7 @@ function App() {
             <Route path="login" element={<Loginpage />} />
 
             <Route path="dashboard" element={<Dashboard />}>
-              <Route path="" element={<Home />} />
+              <Route path="" element={<Dashboardhome />} />
               <Route path="profile" element={<ProfilePage />} />
               <Route path="create-attendance" element={<CreateAttendancepage />} />
               <Route path="mark-attendance" element={<Markeattendancepage />} />
