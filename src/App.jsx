@@ -27,7 +27,7 @@ function App() {
           <Routes>
             <Route path="*" element={<Pagenotfound />} />
             {/* <Route path="" element={<Landingpage />} /> */}
-            <Route path="signup" element={<Signuppage />} />
+            <Route path="" element={<Signuppage />} />
             <Route path="login" element={<Loginpage />} />
 
             <Route path="dashboard" element={<Dashboard />}>
