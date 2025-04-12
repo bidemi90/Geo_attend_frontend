@@ -30,8 +30,8 @@ function App() {
             <Route path="signup" element={<Signuppage />} />
             <Route path="login" element={<Loginpage />} />
 
-            <Route path="" element={<Dashboard />}>
-              <Route path="dashboard" element={<Dashboardhome />} />
+            <Route path="dashboard" element={<Dashboard />}>
+              <Route path="" element={<Dashboardhome />} />
               <Route path="profile" element={<ProfilePage />} />
               <Route path="create-attendance" element={<CreateAttendancepage />} />
               <Route path="mark-attendance" element={<Markeattendancepage />} />
