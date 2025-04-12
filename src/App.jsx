@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import Dashboard from "./pages/Dashboard";
 import Pagenotfound from "./pages/Pagenotfound";
 import Signuppage from "./pages/Signuppage";
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import Loginpage from "./pages/Loginpage";
 import CreateAttendancepage from "./pages/CreateAttendancepage";
 import CollectedAttendancepage from "./pages/CollectedAttendancepage";
