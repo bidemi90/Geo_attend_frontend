@@ -12,6 +12,7 @@ import Attendancehistorypage from "./pages/Attendancehistorypage";
 import ProfilePage from "./pages/ProfilePage";
 import Markeattendancepage from "./pages/Markeattendancepage";
 import Dashboardhome from "./pages/Dashboardhome";
+import LocationTracker from "./pages/Testing";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -33,6 +34,7 @@ function App() {
               <Route path="mark-attendance" element={<Markeattendancepage />} />
               <Route path="attendance-taken" element={<CollectedAttendancepage />} />
               <Route path="attendance-history" element={<Attendancehistorypage />} />
+              <Route path="LocationTracker" element={< LocationTracker />} />
               <Route path="*" element={<Pagenotfound />} />
             </Route>
           </Routes>
