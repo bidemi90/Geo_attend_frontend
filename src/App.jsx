@@ -1,14 +1,10 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { BrowserRouter, Route, Routes, Router } from "react-router-dom";
 import { Provider } from "react-redux";
-
 import Dashboard from "./pages/Dashboard";
 import Pagenotfound from "./pages/Pagenotfound";
 import Signuppage from "./pages/Signuppage";
-import Home from "./pages/Home";
 import Loginpage from "./pages/Loginpage";
 import CreateAttendancepage from "./pages/CreateAttendancepage";
 import CollectedAttendancepage from "./pages/CollectedAttendancepage";

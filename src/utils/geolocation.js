@@ -127,3 +127,37 @@ export const stopWatchingLocation = () => {
   }
 };
 
+
+export const getAccurateLocation = (onSuccess, onError) => {
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 20000,
+    maximumAge: 0,
+  };
+
+  let positions = [];
+
+  const tryGetLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        positions.push(position.coords);
+        if (positions.length === 2) {
+          // Average the two readings
+          const avgLat = (positions[0].latitude + positions[1].latitude) / 2;
+          const avgLng = (positions[0].longitude + positions[1].longitude) / 2;
+          onSuccess({ latitude: avgLat, longitude: avgLng });
+        } else {
+          setTimeout(tryGetLocation, 3000); // wait 3 sec for 2nd reading
+        }
+      },
+      (error) => {
+        console.error("Location error", error);
+        if (onError) onError(error);
+      },
+      options
+    );
+  };
+
+  tryGetLocation();
+};
+

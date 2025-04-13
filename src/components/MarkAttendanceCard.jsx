@@ -1,12 +1,6 @@
 import { Container, Card, Button, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import {
-  getLocationOnce,
-  verifyUserLocation,
-  startWatchingLocation,
-  stopWatchingLocation,
-} from "../utils/geolocation";
 
 const MarkAttendanceCard = () => {
   const [loading, setLoading] = useState(false);
@@ -26,31 +20,6 @@ const MarkAttendanceCard = () => {
       toast.success("Attendance marked successfully!");
       setLoading(false);
     }, 2000);
-  };
-
-  const targetLat = 9.0562646;
-  const targetLng = 7.4985259;
-
-  const handleStartWatch = () => {
-    startWatchingLocation(targetLat, targetLng);
-  };
-
-  const handleStopWatch = () => {
-    stopWatchingLocation();
-  };
-
-  const handleVerify = () => {
-    // const targetLat = 9.0562646; // Replace with actual classroom lat
-    // const targetLng = 7.4985259; // Replace with actual classroom lng
-    const allowedDistance = 600; // meters (~650 yards)
-
-    verifyUserLocation(targetLat, targetLng, allowedDistance, (isNearby) => {
-      if (isNearby) {
-        console.log("Allow attendance");
-      } else {
-        console.log("Block attendance");
-      }
-    });
   };
 
   return (
@@ -76,9 +45,6 @@ const MarkAttendanceCard = () => {
         <div className="mb-3">
           <strong>Location Required:</strong> {attendanceInfo.location}
         </div>
-        <button onClick={handleVerify}>handleVerify</button>
-        <button onClick={handleStartWatch}>Start Watching Location</button>
-        <button onClick={handleStopWatch}>Stop Watching Location</button>
 
         <Button
           variant="success"
@@ -96,7 +62,6 @@ const MarkAttendanceCard = () => {
           )}
         </Button>
       </Card>
-      <ToastContainer position="top-right" autoClose={3000} />
     </Container>
   );
 };

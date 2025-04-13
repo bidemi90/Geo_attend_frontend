@@ -9,17 +9,17 @@ import { FaUser } from "react-icons/fa";
 import { FcPlus, FcList, FcTimeline } from "react-icons/fc";
 import { FcCheckmark } from "react-icons/fc";
 const Dashboardhome = () => {
-  const handleClick = () => {
-    getLocationOnce(
-      (coords) => {
-        console.log("Latitude:", coords.latitude);
-        console.log("Longitude:", coords.longitude);
-      },
-      (error) => {
-        console.error("Location error:", error);
-      }
-    );
-  };
+//   const handleClick = () => {
+//     getLocationOnce(
+//       (coords) => {
+//         console.log("Latitude:", coords.latitude);
+//         console.log("Longitude:", coords.longitude);
+//       },
+//       (error) => {
+//         console.error("Location error:", error);
+//       }
+//     );
+//   };
 
   return (
     <>
@@ -105,9 +105,9 @@ const Dashboardhome = () => {
           </div>
         </div>
 
-        <button onClick={handleClick} variant="success">
+        {/* <button onClick={handleClick} variant="success">
           Get Current Location
-        </button>
+        </button> */}
       </section>
     </>
   );
