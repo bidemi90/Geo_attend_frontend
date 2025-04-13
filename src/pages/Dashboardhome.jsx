@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import { Link } from "react-router-dom"; // 🧭 Import Link
 import { getLocationOnce } from "../utils/geolocation";
@@ -8,18 +6,19 @@ import AttendanceHistory from "../components/AttendanceHistory";
 import { FaUser } from "react-icons/fa";
 import { FcPlus, FcList, FcTimeline } from "react-icons/fc";
 import { FcCheckmark } from "react-icons/fc";
+import LocationMapPreview from "../components/LocationMapPreview";
 const Dashboardhome = () => {
-//   const handleClick = () => {
-//     getLocationOnce(
-//       (coords) => {
-//         console.log("Latitude:", coords.latitude);
-//         console.log("Longitude:", coords.longitude);
-//       },
-//       (error) => {
-//         console.error("Location error:", error);
-//       }
-//     );
-//   };
+  //   const handleClick = () => {
+  //     getLocationOnce(
+  //       (coords) => {
+  //         console.log("Latitude:", coords.latitude);
+  //         console.log("Longitude:", coords.longitude);
+  //       },
+  //       (error) => {
+  //         console.error("Location error:", error);
+  //       }
+  //     );
+  //   };
 
   return (
     <>
@@ -27,6 +26,10 @@ const Dashboardhome = () => {
         <h2 className="text-capitalize fw-bold mx-3 mt-3 text-light fs-4">
           welcome back
         </h2>
+
+        <div className=" card m-2 p-2">
+          <LocationMapPreview />
+        </div>
 
         <div className="d-flex justify-content-around align-items-center dashboardbuttonholder flex-wrap">
           <div className="dashboardbutton col-6 col-md-3 p-3">
