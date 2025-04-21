@@ -22,7 +22,7 @@ function App() {
     <>
       <div className=" app-holder">
         <Provider store={Store}>
-        <BrowserRouter>
+        {/* <BrowserRouter> */}
           <Routes>
             <Route path="*" element={<Pagenotfound />} />
             {/* <Route path="" element={<Landingpage />} /> */}
@@ -40,7 +40,7 @@ function App() {
               <Route path="*" element={<Pagenotfound />} />
             </Route>
           </Routes>
-        </BrowserRouter>
+        {/* </BrowserRouter> */}
         </Provider>
       </div>
     </>
