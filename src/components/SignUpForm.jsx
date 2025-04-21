@@ -46,7 +46,7 @@ function SignUpForm() {
             try {
               console.log(values);
               const response = await axios.post(
-                "http://localhost:1100/user/signup",
+                "https://geo-attend-server.onrender.com/user/signup",
                 {
                   full_name: values.name,
                   matric_number: values.id,

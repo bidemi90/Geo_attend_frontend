@@ -42,7 +42,7 @@ const MarkAttendanceCard = ({  codeFromURL }) => {
 
     try {
       const response = await axios.get(
-        `http://localhost:1100/user/getAttendanceByCode/${code}`
+        `https://geo-attend-server.onrender.com/user/getAttendanceByCode/${code}`
       );
       if (response.data.success) {
         setAttendanceInfo(response.data.data);
@@ -102,7 +102,7 @@ const MarkAttendanceCard = ({  codeFromURL }) => {
     };
 
     try {
-      await axios.post("http://localhost:1100/user/markattendance", attendanceData);
+      await axios.post("https://geo-attend-server.onrender.com/user/markattendance", attendanceData);
       toast.success("Attendance marked successfully!");
       setTimeout(() => {
         navigate("/dashboard");

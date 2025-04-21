@@ -6,7 +6,7 @@ export const fetchUserAttendance = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `http://localhost:1100/user/getUserAttendance/${userId}`
+        `https://geo-attend-server.onrender.com/user/getUserAttendance/${userId}`
       );
       const data = await response.json();
 

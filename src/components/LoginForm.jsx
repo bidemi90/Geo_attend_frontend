@@ -46,7 +46,7 @@ function LoginForm() {
               dispatch(featchinguser());
 
               const response = await axios.post(
-                "http://localhost:1100/user/login",
+                "https://geo-attend-server.onrender.com/user/login",
                 {
                   matric_number: values.id,
                   password: values.password,

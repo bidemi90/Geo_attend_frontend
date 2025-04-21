@@ -44,7 +44,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:1100/user/verifyuserondashbord", {
+      .get("https://geo-attend-server.onrender.com/user/verifyuserondashbord", {
         headers: {
           Authorization: `Bearer ${userdata.token}`,
           "Content-Type": `application/json`,

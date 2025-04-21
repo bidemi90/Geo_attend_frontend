@@ -87,7 +87,7 @@ const CreateAttendanceForm = () => {
       console.log(payload);
 
       const res = await axios.post(
-        "http://localhost:1100/user/createAttendance",
+        "https://geo-attend-server.onrender.com/user/createAttendance",
         payload
       );
 
