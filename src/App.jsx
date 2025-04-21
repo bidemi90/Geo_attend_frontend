@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import { BrowserRouter, Route, Routes, Router } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Router ,HashRouter} from "react-router-dom";
 import { Provider } from "react-redux";
 import Dashboard from "./pages/Dashboard";
 import Pagenotfound from "./pages/Pagenotfound";
@@ -23,6 +23,7 @@ function App() {
       <div className=" app-holder">
         <Provider store={Store}>
         {/* <BrowserRouter> */}
+        <HashRouter>
           <Routes>
             <Route path="*" element={<Pagenotfound />} />
             {/* <Route path="" element={<Landingpage />} /> */}
@@ -40,6 +41,7 @@ function App() {
               <Route path="*" element={<Pagenotfound />} />
             </Route>
           </Routes>
+        </HashRouter>
         {/* </BrowserRouter> */}
         </Provider>
       </div>
