@@ -96,7 +96,7 @@ const CreateAttendanceForm = () => {
       toast.success("Attendance Created Successfully!");
 
       const generatedCode = res.data?.data?.code;
-      const link = `http://localhost:5173/dashboard/mark-attendance?code=${generatedCode}`;
+      const link = `https://geo-attend-frontend.vercel.app/#/dashboard/mark-attendance?code=${generatedCode}`;
 
       setAttendanceLink(link); // <-- show the card with the link
       resetForm();
