@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 
 function Footer() {
   return (
-    <footer className="bg-light text-success py-4  animate__animated animate__fadeInUp">
+    <footer className="h-100 bg-light text-success py-4 animate__animated animate__fadeInUp">
       <Container>
         <Row>
           <Col md={6}>

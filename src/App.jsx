@@ -13,6 +13,7 @@ import ProfilePage from "./pages/ProfilePage";
 import Markeattendancepage from "./pages/Markeattendancepage";
 import Dashboardhome from "./pages/Dashboardhome";
 import LocationTracker from "./pages/Testing";
+import { Store } from "./components/Redux/Store";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -20,6 +21,7 @@ function App() {
   return (
     <>
       <div className=" app-holder">
+        <Provider store={Store}>
         <BrowserRouter>
           <Routes>
             <Route path="*" element={<Pagenotfound />} />
@@ -39,6 +41,7 @@ function App() {
             </Route>
           </Routes>
         </BrowserRouter>
+        </Provider>
       </div>
     </>
   );

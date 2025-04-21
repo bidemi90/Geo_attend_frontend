@@ -37,14 +37,18 @@ const LocationMapPreview = () => {
 
   return (
     <div>
-      <button onClick={fetchLocation} disabled={loading}>
-        {loading ? "Fetching..." : "Get Location"}
+      <button
+        onClick={fetchLocation}
+        disabled={loading}
+        className=" btn btn-success text-capitalize fw-semibold "
+      >
+        {loading ? "Fetching..." : "view live location"}
       </button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {coords && (
-        <div style={{ marginTop: "1rem", height: "400px" }}>
+        <div style={{ marginTop: "1rem", height: "100%" }}>
           <iframe
             title="Map"
             width="100%"

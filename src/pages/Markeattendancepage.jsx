@@ -1,30 +1,21 @@
 import React from "react";
 import MarkAttendanceCard from "../components/MarkAttendanceCard";
 import { getAccurateLocation } from "../utils/geolocation";
+import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const Markeattendancepage = () => {
-  const handleAccurateLocation = () => {
-    getAccurateLocation(
-      (coords) => {
-        console.log("Accurate coords:", coords);
-        // maybe save to localStorage or state
-      },
-      (error) => {
-        console.error("Failed to get accurate location", error);
-      },
-      {
-        maxAttempts: 5,
-        desiredAccuracy: 20,
-      }
-    );
-  };
+ 
+  const [searchParams] = useSearchParams();
+const codeFromURL = searchParams.get("code");
+
+
+
 
   return (
     <>
-      <MarkAttendanceCard />
-      <button onClick={handleAccurateLocation}>
-        test
-      </button>
+<MarkAttendanceCard  codeFromURL={codeFromURL} />
+   
     </>
   );
 };

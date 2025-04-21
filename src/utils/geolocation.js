@@ -51,7 +51,8 @@ export const verifyUserLocation = (
   targetLat,
   targetLng,
   allowedDistance,
-  onResult
+  onResult,
+  setUserLocation, // Pass the function to update the location in the parent component
 ) => {
   getLocationOnce(
     (coords) => {
@@ -61,18 +62,17 @@ export const verifyUserLocation = (
       console.log("Target:", targetLat, targetLng);
       console.log("User:", coords.latitude, coords.longitude);
 
-      const distance = calculateDistance(
-        userLat,
-        userLng,
-        targetLat,
-        targetLng
-      );
+      // Update the user location state here
+      setUserLocation({ latitude: userLat, longitude: userLng });
+
+      const distance = calculateDistance(userLat, userLng, targetLat, targetLng);
 
       if (distance <= allowedDistance) {
         toast.success(`You're within ${Math.round(distance)} meters. ✅`);
         onResult(true); // Callback: access granted
       } else {
         toast.error(`You're too far! (${Math.round(distance)} meters away) ❌`);
+        toast.error(`You are not allowed to mark attendance ❌`);
         onResult(false); // Callback: access denied
       }
     },
@@ -82,6 +82,7 @@ export const verifyUserLocation = (
     }
   );
 };
+
 
 
 let watchId = null;

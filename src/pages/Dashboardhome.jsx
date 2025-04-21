@@ -27,7 +27,7 @@ const Dashboardhome = () => {
           welcome back
         </h2>
 
-        <div className=" card m-2 p-2">
+        <div className=" card m-2 p-2  mx-3 m-auto" style={{ marginTop: "1rem", height: "400px" }}>
           <LocationMapPreview />
         </div>
 
