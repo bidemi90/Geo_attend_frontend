@@ -50,7 +50,7 @@ const CollectedAttendance = () => {
       `Created By: ${selectedAttendance.creatorName}`,
       `Created At: ${new Date(selectedAttendance.createdAt).toLocaleString()}`,
       `Duration: ${selectedAttendance.duration}`,
-      `Location: Lat ${selectedAttendance.location_lat}, Lng ${selectedAttendance.location_lng}`,
+      `Location: location name ${selectedAttendance.location_name}, Lat ${selectedAttendance.location_lat}, Lng ${selectedAttendance.location_lng}`,
     ];
 
     infoLines.forEach((line, i) => {
@@ -179,7 +179,7 @@ const CollectedAttendance = () => {
                 <strong>Duration:</strong> {selectedAttendance.duration}
               </p>
               <p className=" small fs-6">
-                <strong>Location:</strong> Lat {selectedAttendance.location_lat}
+                <strong>Location:</strong> location name {selectedAttendance.location_name}, Lat {selectedAttendance.location_lat}
                 , Lng {selectedAttendance.location_lng}
               </p>
 

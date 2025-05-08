@@ -42,7 +42,7 @@ const LocationMapPreview = () => {
         disabled={loading}
         className=" btn btn-success text-capitalize fw-semibold "
       >
-        {loading ? "Fetching..." : "view live location"}
+        {loading ? "Fetching..." : "confirm live location"}
       </button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}

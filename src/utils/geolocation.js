@@ -24,6 +24,52 @@ export const getLocationOnce = (onSuccess, onError) => {
     }
   );
 };
+export const getLocationOnceWithName = async (onSuccess, onError) => {
+  if (!navigator.geolocation) {
+    const msg = "Geolocation is not supported by your browser.";
+    console.error(msg);
+    if (onError) onError(new Error(msg));
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const { latitude, longitude } = position.coords;
+
+      try {
+        const response = await fetch(
+          `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=696b7a733dd14041a11038af40e3aa83`
+        );
+        const data = await response.json();
+
+        const locationName =
+          data.results[0]?.formatted || "Unknown location";
+
+        onSuccess({
+          lat: latitude,
+          lng: longitude,
+          name: locationName,
+        });
+      } catch (geoError) {
+        console.error("Error fetching location name:", geoError);
+        onSuccess({
+          lat: latitude,
+          lng: longitude,
+          name: "Location name unavailable",
+        });
+      }
+    },
+    (error) => {
+      console.error("Error getting location:", error);
+      if (onError) onError(error);
+    },
+    {
+      maximumAge: 0,
+      enableHighAccuracy: true,
+      timeout: 30000,
+    }
+  );
+};
 
 // Calculates distance in meters
 const calculateDistance = (lat1, lng1, lat2, lng2) => {
@@ -52,7 +98,7 @@ export const verifyUserLocation = (
   targetLng,
   allowedDistance,
   onResult,
-  setUserLocation, // Pass the function to update the location in the parent component
+  setUserLocation // Pass the function to update the location in the parent component
 ) => {
   getLocationOnce(
     (coords) => {
@@ -65,7 +111,12 @@ export const verifyUserLocation = (
       // Update the user location state here
       setUserLocation({ latitude: userLat, longitude: userLng });
 
-      const distance = calculateDistance(userLat, userLng, targetLat, targetLng);
+      const distance = calculateDistance(
+        userLat,
+        userLng,
+        targetLat,
+        targetLng
+      );
 
       if (distance <= allowedDistance) {
         toast.success(`You're within ${Math.round(distance)} meters. ✅`);
@@ -82,8 +133,6 @@ export const verifyUserLocation = (
     }
   );
 };
-
-
 
 let watchId = null;
 
@@ -128,7 +177,6 @@ export const stopWatchingLocation = () => {
   }
 };
 
-
 export const getAccurateLocation = (onSuccess, onError) => {
   const options = {
     enableHighAccuracy: true,
@@ -161,4 +209,3 @@ export const getAccurateLocation = (onSuccess, onError) => {
 
   tryGetLocation();
 };
-

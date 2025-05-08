@@ -19,6 +19,8 @@ import {
   fetchUpdatedUserData,
 } from "../components/Redux/userdata";
 import { getLocationOnce } from "../utils/geolocation";
+import { getLocationOnceWithName } from "../utils/geolocation";
+
 import { Clipboard } from "react-bootstrap-icons";
 
 const CreateAttendanceForm = () => {
@@ -33,7 +35,7 @@ const CreateAttendanceForm = () => {
   const creatorID = userdata.user._id;
   const creationTime = new Date().toLocaleString();
 
-  const [location, setLocation] = useState({ lat: null, lng: null });
+  const [location, setLocation] = useState({ lat: null, lng: null, name: "" });
   const [loading, setLoading] = useState(false);
   const [locationFetched, setLocationFetched] = useState(false);
   const [attendanceLink, setAttendanceLink] = useState("");
@@ -47,9 +49,9 @@ const CreateAttendanceForm = () => {
 
   // Auto-fetch location on mount
   useEffect(() => {
-    getLocationOnce(
+    getLocationOnceWithName(
       (coords) => {
-        setLocation({ lat: coords.latitude, lng: coords.longitude });
+        setLocation(coords);
         setLocationFetched(true);
         toast.success("Location fetched successfully!");
       },
@@ -58,6 +60,7 @@ const CreateAttendanceForm = () => {
       }
     );
   }, []);
+  
 
   const handleCopy = () => {
     if (attendanceLink) {
@@ -83,7 +86,9 @@ const CreateAttendanceForm = () => {
         creationTime,
         location_lat: location.lat,
         location_lng: location.lng,
+        location_name: location.name, // ✅ Added location name
       };
+      
       console.log(payload);
 
       const res = await axios.post(
@@ -178,18 +183,16 @@ const CreateAttendanceForm = () => {
                 <Button
                   variant="outline-success"
                   onClick={() => {
-                    getLocationOnce(
+                    getLocationOnceWithName(
                       (coords) => {
-                        setLocation({
-                          lat: coords.latitude,
-                          lng: coords.longitude,
-                        });
+                        setLocation(coords);
                         setLocationFetched(true);
                         toast.success("Location fetched!");
                       },
                       (error) => toast.error("Location error: " + error.message)
                     );
                   }}
+                  
                   className="w-100 mb-3"
                 >
                   {locationFetched
@@ -219,24 +222,26 @@ const CreateAttendanceForm = () => {
         </Card>
       </Container>
       {attendanceLink && (
-<div className="mt-5 d-flex justify-content-center col-11 mx-auto pb-5">
-<Card  className="p-4 mx-auto mt-4 col- shadow rounded-4"
-        style={{ maxWidth: "450px", width: "100%" }}>
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <h5 className="text-success mb-0">Attendance Link</h5>
-            <Button
-              variant="outline-success"
-              size="sm"
-              onClick={handleCopy}
-              title="Copy to clipboard"
-            >
-              <Clipboard className="me-1" size={16} />
-              Copy
-            </Button>
-          </div>
-          <p className="mb-1 text-break">{attendanceLink}</p>
-        </Card>
-</div>
+        <div className="mt-5 d-flex justify-content-center col-11 mx-auto pb-5">
+          <Card
+            className="p-4 mx-auto mt-4 col- shadow rounded-4"
+            style={{ maxWidth: "450px", width: "100%" }}
+          >
+            <div className="d-flex justify-content-between align-items-center mb-2">
+              <h5 className="text-success mb-0">Attendance Link</h5>
+              <Button
+                variant="outline-success"
+                size="sm"
+                onClick={handleCopy}
+                title="Copy to clipboard"
+              >
+                <Clipboard className="me-1" size={16} />
+                Copy
+              </Button>
+            </div>
+            <p className="mb-1 text-break">{attendanceLink}</p>
+          </Card>
+        </div>
       )}
     </>
   );

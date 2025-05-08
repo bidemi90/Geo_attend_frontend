@@ -64,7 +64,7 @@ const MarkAttendanceCard = ({  codeFromURL }) => {
     if (!attendanceInfo) return;
 
     const { location_lat, location_lng } = attendanceInfo;
-    const allowedDistance = 600;
+    const allowedDistance = 300;
 
     verifyUserLocation(
       location_lat,
@@ -173,6 +173,7 @@ const MarkAttendanceCard = ({  codeFromURL }) => {
             <div className="mb-3 p-2">
               <strong>Location Required:</strong>
               <div>
+                <strong>location name:</strong> {attendanceInfo.location_name} <br />
                 <strong>latitude:</strong> {attendanceInfo.location_lat} <br />
                 <strong>longitude:</strong> {attendanceInfo.location_lng}
               </div>
