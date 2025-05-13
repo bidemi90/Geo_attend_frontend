@@ -287,7 +287,7 @@ const MarkAttendanceCard = ({ codeFromURL }) => {
               <Button
                 variant="success"
                 onClick={handleSubmitAttendanceonline}
-                disabled={loading || !location}
+                disabled={loading || !locationFetched}
                 className="w-100"
               >
                 {loading ? (
