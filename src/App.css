@@ -112,6 +112,7 @@ p, button, .text {
 }
 
 .collectedattendanceholder{
+  overflow: auto;
   height: 90vh;
 }
 .profileholder{

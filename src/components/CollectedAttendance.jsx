@@ -1,13 +1,6 @@
-import React from "react";
-import { useState } from "react";
-
-import { Table, Container, Card, Button, Badge } from "react-bootstrap";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { fetchUserAttendance } from "../components/Redux/userAttendanceSlice";
-import { Modal } from "react-bootstrap";
-
+import React, { useState } from "react";
+import { Table, Button, Badge, Modal } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
@@ -15,17 +8,8 @@ const CollectedAttendance = () => {
   const { userAttendance, isLoading, error } = useSelector(
     (state) => state.userAttendance
   );
+console.log(userAttendance);
 
-  const nowrap = {
-    whiteSpace: "nowrap",
-  };
-
-  const wrapStyle = {
-    whiteSpace: "normal",
-    maxWidth: "250px",
-  };
-
-  // Inside your component:
   const [showModal, setShowModal] = useState(false);
   const [selectedAttendance, setSelectedAttendance] = useState(null);
 
@@ -50,7 +34,7 @@ const CollectedAttendance = () => {
       `Created By: ${selectedAttendance.creatorName}`,
       `Created At: ${new Date(selectedAttendance.createdAt).toLocaleString()}`,
       `Duration: ${selectedAttendance.duration}`,
-      `Location: location name ${selectedAttendance.location_name}, Lat ${selectedAttendance.location_lat}, Lng ${selectedAttendance.location_lng}`,
+      `Location: ${selectedAttendance.location_name}, Lat ${selectedAttendance.location_lat}, Lng ${selectedAttendance.location_lng}`,
     ];
 
     infoLines.forEach((line, i) => {
@@ -63,15 +47,16 @@ const CollectedAttendance = () => {
       attendee.matricNumber,
       attendee.email || "-",
       new Date(attendee.timestamp).toLocaleString(),
+      attendee.location_name || "N/A", // Add location name here
     ]);
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 30 + infoLines.length * 7 + 5,
-      head: [["#", "Full Name", "Matric Number", "Email", "Timestamp"]],
+      head: [["#", "Full Name", "Matric Number", "Email", "Timestamp", "Location"]], // Add "Location" column
       body: tableData,
       theme: "grid",
       headStyles: {
-        fillColor: [40, 167, 69], // Bootstrap "success" green
+        fillColor: [40, 167, 69], // Bootstrap success green
         textColor: 255,
         fontStyle: "bold",
       },
@@ -83,6 +68,9 @@ const CollectedAttendance = () => {
 
     doc.save(`Attendance_${selectedAttendance.classSection}.pdf`);
   };
+
+  const nowrap = { whiteSpace: "nowrap" };
+  const wrapStyle = { whiteSpace: "normal", maxWidth: "250px" };
 
   return (
     <>
@@ -98,7 +86,7 @@ const CollectedAttendance = () => {
             You have not taken any attendance yet.
           </p>
         ) : (
-          <div style={{ overflowX: "auto", overflowY: "auto", width: "100%" }}>
+          <div style={{ overflowX: "auto" }}>
             <Table bordered hover>
               <thead className="table-success">
                 <tr>
@@ -107,7 +95,7 @@ const CollectedAttendance = () => {
                   <th style={nowrap}>Code</th>
                   <th style={nowrap}>Created At</th>
                   <th style={nowrap}>Duration</th>
-                  <th style={nowrap}>Total Number</th>
+                  <th style={nowrap}>Total</th>
                   <th style={nowrap}>Actions</th>
                 </tr>
               </thead>
@@ -136,7 +124,6 @@ const CollectedAttendance = () => {
                         >
                           View
                         </Button>
-
                         <Button
                           variant="outline-dark"
                           size="sm"
@@ -161,31 +148,32 @@ const CollectedAttendance = () => {
         <Modal.Header closeButton>
           <Modal.Title>Attendance Details</Modal.Title>
         </Modal.Header>
-        <Modal.Body className=" bg-success text-light">
+        <Modal.Body className="bg-success text-light">
           {selectedAttendance ? (
             <>
-              <p className=" small fs-6">
+              <p>
                 <strong>Class/Section:</strong>{" "}
                 {selectedAttendance.classSection}
               </p>
-              <p className=" small fs-6">
+              <p>
                 <strong>Created By:</strong> {selectedAttendance.creatorName}
               </p>
-              <p className=" small fs-6">
+              <p>
                 <strong>Created At:</strong>{" "}
                 {new Date(selectedAttendance.createdAt).toLocaleString()}
               </p>
-              <p className=" small fs-6">
+              <p>
                 <strong>Duration:</strong> {selectedAttendance.duration}
               </p>
-              <p className=" small fs-6">
-                <strong>Location:</strong> location name {selectedAttendance.location_name}, Lat {selectedAttendance.location_lat}
-                , Lng {selectedAttendance.location_lng}
+              <p>
+                <strong>Location:</strong> {selectedAttendance.location_name}, Lat{" "}
+                {selectedAttendance.location_lat}, Lng{" "}
+                {selectedAttendance.location_lng}
               </p>
 
               <hr />
               <h5>Attendees</h5>
-              <Table striped bordered hover responsive>
+              <Table striped bordered hover responsive variant="light">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -193,6 +181,7 @@ const CollectedAttendance = () => {
                     <th>Matric Number</th>
                     <th>Email</th>
                     <th>Timestamp</th>
+                    <th>Location</th> {/* Add location name column */}
                   </tr>
                 </thead>
                 <tbody>
@@ -203,6 +192,7 @@ const CollectedAttendance = () => {
                       <td>{att.matricNumber}</td>
                       <td>{att.email || "-"}</td>
                       <td>{new Date(att.timestamp).toLocaleString()}</td>
+                      <td>{att.location_name || "N/A"}</td> {/* Display Location Name */}
                     </tr>
                   ))}
                 </tbody>

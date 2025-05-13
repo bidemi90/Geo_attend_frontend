@@ -18,7 +18,6 @@ import {
   featchinguserSuccessful,
   fetchUpdatedUserData,
 } from "../components/Redux/userdata";
-import { getLocationOnce } from "../utils/geolocation";
 import { getLocationOnceWithName } from "../utils/geolocation";
 
 import { Clipboard } from "react-bootstrap-icons";
@@ -45,9 +44,10 @@ const CreateAttendanceForm = () => {
     duration: Yup.number()
       .min(1, "Minimum duration is 1 minute")
       .required("Duration is required"),
+    classRange: Yup.string().required("Class range is required"),
+    attendanceType: Yup.string().required("Attendance type is required"),
   });
 
-  // Auto-fetch location on mount
   useEffect(() => {
     getLocationOnceWithName(
       (coords) => {
@@ -60,7 +60,6 @@ const CreateAttendanceForm = () => {
       }
     );
   }, []);
-  
 
   const handleCopy = () => {
     if (attendanceLink) {
@@ -81,14 +80,16 @@ const CreateAttendanceForm = () => {
       const payload = {
         classSection: values.classSection,
         duration: values.duration,
+        classRange: values.classRange,
+        attendanceType: values.attendanceType,
         creatorName,
         creatorID,
         creationTime,
         location_lat: location.lat,
         location_lng: location.lng,
-        location_name: location.name, // ✅ Added location name
+        location_name: location.name,
       };
-      
+
       console.log(payload);
 
       const res = await axios.post(
@@ -103,7 +104,7 @@ const CreateAttendanceForm = () => {
       const generatedCode = res.data?.data?.code;
       const link = `https://geo-attend-frontend.vercel.app/#/dashboard/mark-attendance?code=${generatedCode}`;
 
-      setAttendanceLink(link); // <-- show the card with the link
+      setAttendanceLink(link);
       resetForm();
     } catch (err) {
       console.error("Error submitting:", err);
@@ -126,6 +127,8 @@ const CreateAttendanceForm = () => {
             initialValues={{
               classSection: "",
               duration: "",
+              classRange: "",
+              attendanceType: "",
             }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
@@ -163,6 +166,43 @@ const CreateAttendanceForm = () => {
                 </BootstrapForm.Group>
 
                 <BootstrapForm.Group className="mb-3">
+                  <BootstrapForm.Label>Class Size Range</BootstrapForm.Label>
+                  <BootstrapForm.Select
+                    name="classRange"
+                    value={values.classRange}
+                    onChange={handleChange}
+                    isInvalid={touched.classRange && !!errors.classRange}
+                  >
+                    <option value="">Select class size range</option>
+                    <option value="100">Small (100 meters)</option>
+                    <option value="200">Medium (200 meters)</option>
+                    <option value="400">Large (400 meters)</option>
+                  </BootstrapForm.Select>
+                  <BootstrapForm.Control.Feedback type="invalid">
+                    {errors.classRange}
+                  </BootstrapForm.Control.Feedback>
+                </BootstrapForm.Group>
+
+                <BootstrapForm.Group className="mb-3">
+                  <BootstrapForm.Label>Attendance Type</BootstrapForm.Label>
+                  <BootstrapForm.Select
+                    name="attendanceType"
+                    value={values.attendanceType}
+                    onChange={handleChange}
+                    isInvalid={
+                      touched.attendanceType && !!errors.attendanceType
+                    }
+                  >
+                    <option value="">Select attendance type</option>
+                    <option value="In-person">In-person Class</option>
+                    <option value="online">Online Class</option>
+                  </BootstrapForm.Select>
+                  <BootstrapForm.Control.Feedback type="invalid">
+                    {errors.attendanceType}
+                  </BootstrapForm.Control.Feedback>
+                </BootstrapForm.Group>
+
+                <BootstrapForm.Group className="mb-3">
                   <BootstrapForm.Label>Creator's Name</BootstrapForm.Label>
                   <BootstrapForm.Control
                     type="text"
@@ -192,7 +232,6 @@ const CreateAttendanceForm = () => {
                       (error) => toast.error("Location error: " + error.message)
                     );
                   }}
-                  
                   className="w-100 mb-3"
                 >
                   {locationFetched

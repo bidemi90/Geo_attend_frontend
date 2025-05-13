@@ -42,8 +42,7 @@ export const getLocationOnceWithName = async (onSuccess, onError) => {
         );
         const data = await response.json();
 
-        const locationName =
-          data.results[0]?.formatted || "Unknown location";
+        const locationName = data.results[0]?.formatted || "Unknown location";
 
         onSuccess({
           lat: latitude,
@@ -93,7 +92,7 @@ const calculateDistance = (lat1, lng1, lat2, lng2) => {
 
 // targetLat, targetLng = lecture location
 // allowedDistance = how far (in meters) user can be from target point
-export const verifyUserLocation = (
+export const verifyUserLocation = async (
   targetLat,
   targetLng,
   allowedDistance,
@@ -101,15 +100,37 @@ export const verifyUserLocation = (
   setUserLocation // Pass the function to update the location in the parent component
 ) => {
   getLocationOnce(
-    (coords) => {
+    async (coords) => {
       const userLat = coords.latitude;
       const userLng = coords.longitude;
-
+      let locationName = "";
       console.log("Target:", targetLat, targetLng);
       console.log("User:", coords.latitude, coords.longitude);
 
+      try {
+        const response = await fetch(
+          `https://api.opencagedata.com/geocode/v1/json?q=${userLat}+${userLng}&key=696b7a733dd14041a11038af40e3aa83`
+        );
+        const data = await response.json();
+
+        locationName = data.results[0]?.formatted || "Unknown location";
+        console.log(locationName);
+
+        setUserLocation({
+          latitude: userLat,
+          longitude: userLng,
+          location_name: locationName,
+        });
+      } catch (geoError) {
+        console.error("Error fetching location name:", geoError);
+        setUserLocation({
+          latitude: userLat,
+          longitude: userLng,
+          location_name: "Location name unavailable",
+        });
+      }
+
       // Update the user location state here
-      setUserLocation({ latitude: userLat, longitude: userLng });
 
       const distance = calculateDistance(
         userLat,

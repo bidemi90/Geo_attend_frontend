@@ -7,28 +7,27 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { getLocationOnceWithName } from "../utils/geolocation";
 
-
-const MarkAttendanceCard = ({  codeFromURL }) => {
-
+const MarkAttendanceCard = ({ codeFromURL }) => {
   const navigate = useNavigate();
 
   const { userdata } = useSelector((state) => state.userdata);
   const [loading, setLoading] = useState(false);
   const [locationValid, setLocationValid] = useState(false);
+  const [locationFetched, setLocationFetched] = useState(false);
+  const [location, setLocation] = useState({ lat: null, lng: null, name: "" });
+
   const [userLocation, setUserLocation] = useState(null);
   const [code, setCode] = useState("");
   const [attendanceInfo, setAttendanceInfo] = useState(null);
   const [submittingCode, setSubmittingCode] = useState(false);
-
 
   useEffect(() => {
     if (codeFromURL) {
       setCode(codeFromURL);
     }
   }, [codeFromURL]);
-  
-
 
   const handleCodeSubmit = async (e) => {
     e.preventDefault();
@@ -64,7 +63,7 @@ const MarkAttendanceCard = ({  codeFromURL }) => {
     if (!attendanceInfo) return;
 
     const { location_lat, location_lng } = attendanceInfo;
-    const allowedDistance = 300;
+    const allowedDistance = attendanceInfo.classRange;
 
     verifyUserLocation(
       location_lat,
@@ -84,7 +83,7 @@ const MarkAttendanceCard = ({  codeFromURL }) => {
   };
 
   const handleSubmitAttendance = async () => {
-    if (!userdata?.user || !userLocation || !attendanceInfo) {
+    if (!userdata?.user || !attendanceInfo || !userLocation) {
       toast.error("Missing required data to mark attendance.");
       return;
     }
@@ -99,10 +98,15 @@ const MarkAttendanceCard = ({  codeFromURL }) => {
       email: user.email,
       timestamp,
       code,
+      location_name: userLocation.location_name,
     };
+    console.log(attendanceData);
 
     try {
-      await axios.post("https://geo-attend-server.onrender.com/user/markattendance", attendanceData);
+      await axios.post(
+        "https://geo-attend-server.onrender.com/user/markattendance",
+        attendanceData
+      );
       toast.success("Attendance marked successfully!");
       setTimeout(() => {
         navigate("/dashboard");
@@ -111,7 +115,43 @@ const MarkAttendanceCard = ({  codeFromURL }) => {
       toast.error("Failed to mark attendance.");
       toast.error(error.response.data.message);
       console.log(error);
-      
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleSubmitAttendanceonline = async () => {
+    if (!userdata?.user || !attendanceInfo || !location) {
+      toast.error("Missing required data to mark attendance.");
+      return;
+    }
+
+    setLoading(true);
+    const user = userdata.user;
+    const timestamp = new Date().toISOString();
+
+    const attendanceData = {
+      fullName: user.full_name,
+      matric_number: user.matric_number,
+      email: user.email,
+      timestamp,
+      code,
+      location_name: location.name,
+    };
+    console.log(attendanceData);
+
+    try {
+      await axios.post(
+        "https://geo-attend-server.onrender.com/user/markattendance",
+        attendanceData
+      );
+      toast.success("Attendance marked successfully!");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 3000);
+    } catch (error) {
+      toast.error("Failed to mark attendance.");
+      toast.error(error.response.data.message);
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -158,50 +198,108 @@ const MarkAttendanceCard = ({  codeFromURL }) => {
         {/* Step 2: Show Attendance Info + Actions */}
         {attendanceInfo && (
           <>
-            <div className="mb-2">
+            <div className="mb-2 text-capitalize">
               <strong>Class/Section:</strong> {attendanceInfo.classSection}
             </div>
-            <div className="mb-2">
+            <div className="mb-2 text-capitalize">
               <strong>Created By:</strong> {attendanceInfo.creatorName}
             </div>
-            <div className="mb-2">
+            <div className="mb-2 text-capitalize">
               <strong>Created At:</strong> {attendanceInfo.createdAt}
             </div>
-            <div className="mb-2">
+            <div className="mb-2 text-capitalize">
               <strong>Duration:</strong> {attendanceInfo.duration}
             </div>
-            <div className="mb-3 p-2">
+            <div className="mb-2 text-capitalize fw-bold">
+              <strong>attendance type:</strong> {attendanceInfo.attendanceType}
+            </div>
+            <div
+              className={
+                attendanceInfo.attendanceType == "In-person"
+                  ? "d-block mb-3 text-capitalize p-2"
+                  : "d-none"
+              }
+            >
               <strong>Location Required:</strong>
               <div>
-                <strong>location name:</strong> {attendanceInfo.location_name} <br />
+                <strong>location name:</strong> {attendanceInfo.location_name}{" "}
+                <br />
                 <strong>latitude:</strong> {attendanceInfo.location_lat} <br />
                 <strong>longitude:</strong> {attendanceInfo.location_lng}
               </div>
             </div>
 
-            <Button
-              variant="success"
-              onClick={handleVerifyLocation}
-              className="mb-3 w-100"
+            <div
+              className={
+                attendanceInfo.attendanceType == "In-person"
+                  ? "d-block "
+                  : "d-none"
+              }
             >
-              Verify Location
-            </Button>
+              <Button
+                variant="success"
+                onClick={handleVerifyLocation}
+                className="mb-3 w-100"
+              >
+                Verify Location
+              </Button>
 
-            <Button
-              variant="success"
-              onClick={handleSubmitAttendance}
-              disabled={loading || !locationValid}
-              className="w-100"
+              <Button
+                variant="success"
+                onClick={handleSubmitAttendance}
+                disabled={loading || !locationValid}
+                className="w-100"
+              >
+                {loading ? (
+                  <>
+                    <Spinner animation="border" size="sm" className="me-2" />
+                    Marking...
+                  </>
+                ) : (
+                  "Mark Attendance"
+                )}
+              </Button>
+            </div>
+            <div
+              className={
+                attendanceInfo.attendanceType == "In-person"
+                  ? "d-none "
+                  : "d-block"
+              }
             >
-              {loading ? (
-                <>
-                  <Spinner animation="border" size="sm" className="me-2" />
-                  Marking...
-                </>
-              ) : (
-                "Mark Attendance"
-              )}
-            </Button>
+              <Button
+                variant="outline-success"
+                onClick={() => {
+                  getLocationOnceWithName(
+                    (coords) => {
+                      setLocation(coords);
+                      setLocationFetched(true);
+                      toast.success("Location fetched!");
+                    },
+                    (error) => toast.error("Location error: " + error.message)
+                  );
+                }}
+                className="w-100 mb-3"
+              >
+                {locationFetched ? "Location Fetched ✅" : "Fetch Location 📍"}
+              </Button>
+
+              <Button
+                variant="success"
+                onClick={handleSubmitAttendanceonline}
+                disabled={loading || !location}
+                className="w-100"
+              >
+                {loading ? (
+                  <>
+                    <Spinner animation="border" size="sm" className="me-2" />
+                    Marking...
+                  </>
+                ) : (
+                  "Mark Attendance"
+                )}
+              </Button>
+            </div>
           </>
         )}
       </Card>
